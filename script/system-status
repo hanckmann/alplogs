@@ -64,12 +64,12 @@ SYSTEM INFORMATION
 $(cat /proc/cpuinfo)
 
 
-# MEMORY:
+# MEMORY
 
 $(free)
 
 
-# NETWORK:
+# NETWORK
 
 $(ip addr)
 
