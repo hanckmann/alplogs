@@ -1,0 +1,39 @@
+#!/bin/sh
+
+function smartctl_disk {
+  DISK="/dev/${1}"
+  if [ -b "${DISK}" ]; then
+    echo "------------------- ${DISK} --------------------"
+    /usr/sbin/smartctl -H ${DISK};
+    /usr/sbin/smartctl -i ${DISK};
+  fi
+}
+
+# Looping does not work in ash (alpine linux), so we unwind the loop
+smartctl_disk sda
+smartctl_disk sdb
+smartctl_disk sdc
+smartctl_disk sdd
+smartctl_disk sde
+smartctl_disk sdf
+smartctl_disk sdg
+smartctl_disk sdh
+smartctl_disk sdi
+smartctl_disk sdj
+smartctl_disk sdk
+smartctl_disk sdl
+smartctl_disk sdm
+smartctl_disk sdn
+smartctl_disk sdo
+smartctl_disk sdp
+smartctl_disk sdq
+smartctl_disk sdr
+smartctl_disk sds
+smartctl_disk sdt
+smartctl_disk sdu
+smartctl_disk sdv
+smartctl_disk sdw
+smartctl_disk sdx
+smartctl_disk sdy
+smartctl_disk sdz
+
