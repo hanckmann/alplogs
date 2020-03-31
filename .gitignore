@@ -1,3 +1,5 @@
+logs/system_status*
+
 
 # Created by https://www.gitignore.io/api/python,sublimetext,linux,windows,macos
 # Edit at https://www.gitignore.io/?templates=python,sublimetext,linux,windows,macos
