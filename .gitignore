@@ -1,5 +1,5 @@
 gui/venv
-logs/system_status*
+logs/
 
 
 # Created by https://www.gitignore.io/api/python,sublimetext,linux,windows,macos

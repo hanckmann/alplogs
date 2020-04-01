@@ -134,7 +134,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.data_tableview.resizeColumnsToContents()
 
     def setup_ui(self):
-        self.logo_icon = QtGui.QIcon('staal_logo.png')
+        self.logo_icon = QtGui.QIcon('assets/Mimetypes-text-x-log-icon.png')
         self.setWindowIcon(self.logo_icon)
         self.setWindowTitle('{} ({})'.format(__application__, __version__))
         self.setMenu()
@@ -143,7 +143,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Header
         folderpath_label = QtWidgets.QLabel('Folder:')
         folderpath_lineeditlineedit = QtWidgets.QLineEdit()
-        folderpath_lineeditlineedit.setText('/home/patrick/Projects/alplogs/logs')
+        folderpath_lineeditlineedit.setText(os.getcwd())
         folderpath_lineeditlineedit.returnPressed.connect(lambda: self.send(self.folderpath_lineeditlineedit.text()))
         folderpath_lineeditlineedit.setMinimumWidth(400)
         self.folderpath_lineeditlineedit = folderpath_lineeditlineedit
@@ -215,11 +215,11 @@ class MainWindow(QtWidgets.QMainWindow):
         statusbar.addWidget(status_message_right, 1)
         left = ''
         if items is not None:
-            left = 'Logs: {}'.format(items)
+            left += 'Logs: {}'.format(items)
         if first is not None:
-            left = '   From: {}'.format(first.isoformat().replace('T', ' '))
+            left += '   From: {}'.format(first.isoformat().replace('T', ' '))
         if last is not None:
-            left = '   Until: {}'.format(last.isoformat().replace('T', ' '))
+            left += '   Until: {}'.format(last.isoformat().replace('T', ' '))
         if not right:
             right = 'ScoobyDoobyDoo!!!'
         status_message_left.setText(left)

@@ -1,4 +1,13 @@
 #!/bin/sh
+#
+# Copyright (c) Patrick Hanckmann
+# All rights reserved.
+#
+# License information is provided in LICENSE.md
+#
+# Author: Patrick Hanckmann <hanckmann@gmail.com>
+# Project: Alpine System Info Log Viewer
+
 
 function smartctl_disk {
   DISK="/dev/${1}"

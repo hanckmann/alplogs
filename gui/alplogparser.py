@@ -281,7 +281,7 @@ class Disks(AlpLogModule):
         for index, part in enumerate(parts):
             if index in self.using:
                 key = self.using[index]
-                value = part.strip()
+                value = part.strip().replace('├', '').replace('├', '').replace('└', '').replace('─', ' ')
                 self.items[key] = value
 
     def name(self):
