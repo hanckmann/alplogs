@@ -5,10 +5,19 @@ Alpine System Info logger with email functionality and log Viewer.
 
 This repository contains two tools:
 
-* Alpine System Info logger
-* Alpine System Info log Viewer
+* Alpine System Info logger (to create log files)
+* Alpine System Info log Viewer (to view and compare log files)
+
+The Alpine System Info log Viewer reads all log-files from a folder (sorted by timestamp).
+It parses the log files and shows the information per module in a table.
+Any changes in the log file (compared with the previous log file) are marked red.
+This allows to find changes to the system fast!
 
 ![CSV Compare screenshot](https://raw.githubusercontent.com/hanckmann/alplogs/master/assets/screenshot1.png)
+
+The code is super easy to extend with other modules (both the logger and the viewer).
+
+This is work in progress...
 
 
 Requirements
