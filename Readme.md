@@ -8,7 +8,7 @@ This repository contains two tools:
 * Alpine System Info logger
 * Alpine System Info log Viewer
 
-![CSV Compare screenshot](https://raw.githubusercontent.com/hanckmann/alplog/master/assets/screenshot1.png)
+![CSV Compare screenshot](https://raw.githubusercontent.com/hanckmann/alplogs/master/assets/screenshot1.png)
 
 
 Requirements
