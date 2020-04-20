@@ -108,7 +108,7 @@ class Header(AlpLogModule):
         value = None
         key, data = split_first_colon(line)
         if key == 'date':
-            value = datetime.strptime(data, '%Y-%M-%d').date()
+            value = datetime.strptime(data, '%Y-%m-%d').date()
         elif key == 'time':
             value = datetime.strptime(data, '%H:%M:%S').time()
         elif key == 'Kernel version':
