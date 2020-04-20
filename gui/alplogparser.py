@@ -386,7 +386,6 @@ class UpgradablePackages(AlpLogModule):
             return
         if line.startswith('Installed'):
             return
-        print('added "{}"'.format(line.strip()))
         self._packages.append(line.strip())
 
     def finalise(self) -> None:
