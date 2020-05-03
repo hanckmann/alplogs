@@ -43,6 +43,7 @@ def factory(name):
         'NETWORK': Network,
         'EXTERNAL IP ADDRESS': IPAddress,
         'DISKS': Disks,
+        'DISK SPACE USAGE': DiskSpaceUsage,
         'MOUNT': Mount,
         'ZFS POOLS': ZFSPools,
         'SMART STATUS': SmartStatus,
@@ -298,6 +299,42 @@ class Mount(AlpLogModule):
             return
         key = line.split()[0]
         self.items[key] = line
+
+
+class DiskSpaceUsage(AlpLogModule):
+
+    using = {
+        0: 'filesystem',
+        1: 'type',
+        2: 'size',
+        3: 'used',
+        4: 'available',
+        5: 'use %',
+        6: 'mounted on',
+    }
+
+    def add_line(self, line) -> None:
+        if not line.strip():
+            return
+        if line.strip().startswith('Filesystem'):
+            return
+        if 'filesystem' in self.items:
+            # Create new instance and return as such
+            new_instance = DiskSpaceUsage()
+            new_instance.add_line(line)
+            return new_instance
+        parts = line.split()
+        for index, part in enumerate(parts):
+            if index in self.using:
+                key = self.using[index]
+                value = part.strip()
+                self.items[key] = value
+
+    def name(self):
+        name = None
+        if 'filesystem' in self.items:
+            name = self.items['filesystem'].replace('/dev/', '')
+        return '{} - {}'.format('Disk Usage', name)
 
 
 class ZFSPools(AlpLogModule):
