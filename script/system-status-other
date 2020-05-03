@@ -100,8 +100,6 @@ $(mount)
 
 $(df -hT)
 
-$(zpool status)
-
 
 # RC STATUS
 
