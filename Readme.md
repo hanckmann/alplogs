@@ -17,6 +17,9 @@ This allows to find changes to the system fast!
 
 The code is super easy to extend with other modules (both the logger and the viewer).
 
+The ZFS version is targetted at local installations on ZFS. It also includes Smart Monitoring via smartmontools.
+The "other" version is targetted at Virtual Machine installations using non-ZFS filesystems (ext2/3/4, xfs, etc).
+
 This is work in progress...
 
 
@@ -33,11 +36,11 @@ For the Alpine System Info logger:
   - ssmtp
   - mailx
   - wget
-  - zfs
-  - smartmontools
   - util-linux
   - procps
-
+* for the ZFS script the following applications should also be available (installed):
+  - zfs
+  - smartmontools
 
 For the Alpine System Info log Viewer:
 
