@@ -23,7 +23,7 @@
 MAIL=$1
 TIMESTAMP=`date +%Y%m%d.%H%M%S`
 FILENAME="system_status.${TIMESTAMP}"
-FILEPATH="/home/patrick/systeminfo/logs"
+FILEPATH="/home/patrick/alplogs/logs"
 # FILEPATH="/tmp"
 
 MAIL_TO="hanckmann@gmail.com"
