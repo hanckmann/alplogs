@@ -1,0 +1,154 @@
+#!/bin/sh
+#
+# Copyright (c) Patrick Hanckmann
+# All rights reserved.
+#
+# License information is provided in LICENSE.md
+#
+# Author: Patrick Hanckmann <hanckmann@gmail.com>
+# Project: Alpine System Info Log Viewer
+
+# Print the system status to a textfile
+
+# DEPENDENCIES
+# - ALPINE LINUX
+#   - ssmtp
+#   - mailx
+#   - wget
+#   - smartmontools
+#   - util-linux
+#   - procps
+
+# Settings
+MAIL=$1
+TIMESTAMP=`date +%Y%m%d.%H%M%S`
+FILENAME="system_status.${TIMESTAMP}"
+FILEPATH="/home/patrick/systeminfo/logs"
+# FILEPATH="/tmp"
+
+MAIL_TO="hanckmann@gmail.com"
+MAIL_FROM="hanckmann@gmail.com"
+MAIL_SUBJECT="System status for ${HOSTNAME}"
+MAIL_TEXT="no"
+if [ "${MAIL}" = "mail" ]
+then
+  MAIL_TEXT="yes"
+fi
+
+# Code
+FILE="${FILEPATH}/${FILENAME}"
+echo "Generating system status file: ${FILE}"
+touch "${FILE}"
+
+# Update apk database
+apk update
+
+
+cat >"${FILE}" <<EOL
+STATUS INFORMATION
+==================
+
+  date: $(date +%Y-%m-%d)
+  time: $(date +%H:%M:%S)
+  timezone: $(date +"%Z %z")
+
+  OS: $(uname --operating-system)
+  Arch: $(uname --machine)
+  Kernel name: $(uname --kernel-name)
+  Kernel release: $(uname --kernel-release)
+  Kernel version: $(uname --kernel-version)
+
+  hostname: ${HOSTNAME}
+  uptime: $(uptime)
+
+  send e-mail: ${MAIL_TEXT}
+
+
+SYSTEM INFORMATION
+------------------
+
+# CPU
+
+$(cat /proc/cpuinfo)
+
+
+# MEMORY
+
+$(free)
+
+
+# NETWORK
+
+$(ip addr)
+
+
+# EXTERNAL IP ADDRESS
+
+$(wget http://ipecho.net/plain -O - -q; echo)
+
+
+# DISKS
+
+$(lsblk -o "NAME,MAJ:MIN,RM,SIZE,RO,FSTYPE,MOUNTPOINT,UUID")
+
+
+# MOUNT
+
+$(mount)
+
+
+# DISK SPACE USAGE
+
+$(df -hT)
+
+$(zpool status)
+
+
+# SMART STATUS
+
+$(/mnt/zpool3/systeminfo/smart-status)
+
+
+# RC STATUS
+
+$(rc-status --all --nocolor)
+
+
+# USB
+
+$(lsusb)
+
+
+UPGRADABLE PACKAGES
+-------------------
+
+$(apk version)
+
+
+ACCESS INFORMATION
+------------------
+
+# PROCESSES
+
+$(ps -aux)
+
+
+# USERS
+
+$(awk -F: '{ print $1}' /etc/passwd)
+
+
+# GROUPS
+
+$(getent group | cut -d: -f1)
+
+EOL
+
+# Send as mail
+if [ "${MAIL}" = "mail" ]
+then
+  echo "Sending report to: ${MAIL_TO}"
+  cat ${FILE}  | mail -s "${MAIL_SUBJECT}" "${MAIL_TO}"
+fi
+
+echo "Done"
