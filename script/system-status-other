@@ -15,7 +15,6 @@
 #   - ssmtp
 #   - mailx
 #   - wget
-#   - smartmontools
 #   - util-linux
 #   - procps
 
@@ -102,11 +101,6 @@ $(mount)
 $(df -hT)
 
 $(zpool status)
-
-
-# SMART STATUS
-
-$(/mnt/zpool3/systeminfo/smart-status)
 
 
 # RC STATUS
