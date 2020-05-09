@@ -1,5 +1,6 @@
 gui/venv
 logs/
+get_logs.sh
 
 
 # Created by https://www.gitignore.io/api/python,sublimetext,linux,windows,macos
