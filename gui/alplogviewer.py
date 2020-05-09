@@ -82,18 +82,22 @@ class AlpLogModel(QtCore.QAbstractTableModel):
                 return self._header_horizontal[section]
 
 
-class MainWindow(QtWidgets.QMainWindow):
+class AlpLogViewerWindows(QtWidgets.QMainWindow):
 
     def __init__(self,
                  parent=None,
+                 folder=None,
                  *args,
                  **kwargs):
-        super(MainWindow, self).__init__(*args, **kwargs)
+        super(AlpLogViewerWindows, self).__init__(*args, **kwargs)
         # Build UI
         self.data = list()
         self.model = AlpLogModel()
         self.modules_model = QtCore.QStringListModel()
         self.setup_ui()
+        if folder:
+            self.folderpath_lineeditlineedit.setText(str(Path(folder).absolute()))
+            self.analyse_logs()
 
     def show_folder_input_dialog(self):
         location = os.getcwd()
@@ -252,9 +256,10 @@ def get_options(args=sys.argv[1:]):
 if __name__ == '__main__':
     # Options
     options = get_options(sys.argv[1:])
+    folder = options.folder
 
     # Start UI
     app = QtWidgets.QApplication(sys.argv)
-    w = MainWindow()
+    w = AlpLogViewerWindows(folder=folder)
     w.show()
     sys.exit(app.exec_())
