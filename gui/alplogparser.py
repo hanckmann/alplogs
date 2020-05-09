@@ -384,9 +384,57 @@ class ZFSPools(AlpLogModule):
 
 class SmartStatus(AlpLogModule):
 
+    using = {
+        0: 'filesystem',
+        1: 'Model Family',
+        2: 'Device Model',
+        3: 'Serial Number',
+        4: 'LU WWN Device Id',
+        5: 'Firmware Version',
+        6: 'User Capacity',
+        7: 'Sector Sizes',
+        8: 'Sector Size',
+        9: 'Rotation Rate',
+        10: 'Form Factor',
+        11: 'Device is',
+        12: 'ATA Version is',
+        13: 'SATA Version is',
+        14: 'SMART support is',
+        15: 'test result',
+    }
+
     def add_line(self, line) -> None:
         if not line.strip():
             return
+        if line.strip().startswith('Filesystem'):
+            return
+        if line.startswith('------------------- /'):
+            if 'filesystem' in self.items:
+                # Create new instance and return as such
+                new_instance = SmartStatus()
+                new_instance.add_line(line)
+                return new_instance
+        parts = line.split(':')
+        if parts[0] in self.using.values():
+            key = parts[0].strip()
+            value = parts[1].strip()
+            self.items[key] = value
+        elif line.startswith('------------------- /'):
+            key = 'filesystem'
+            value = line.replace('-', '').strip()
+            self.items[key] = value
+        elif line.startswith('SMART overall-health self-assessment test result'):
+            key = 'test result'
+            value = line.split(':')[1].strip()
+            self.items[key] = value
+        else:
+            pass
+
+    def name(self):
+        name = None
+        if 'filesystem' in self.items:
+            name = self.items['filesystem'].replace('/dev/', '')
+        return '{} - {}'.format('Smart Status', name)
 
 
 class RCStatus(AlpLogModule):
