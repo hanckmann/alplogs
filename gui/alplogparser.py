@@ -46,8 +46,11 @@ def factory(name):
         'DISK SPACE USAGE': DiskSpaceUsage,
         'MOUNT': Mount,
         'ZFS POOLS': ZFSPools,
+        'BTRFS SCRUB RESULTS': BTRFSScrubResults,
+        'BTRFS STATS': BTRFSStats,
         'SMART STATUS': SmartStatus,
         'RC STATUS': RCStatus,
+        'SYSTEMCTL STATUS': SystemctlStatus,
         'USB': USB,
         'UPGRADABLE PACKAGES': UpgradablePackages,
         'PROCESSES': Process,
@@ -382,6 +385,80 @@ class ZFSPools(AlpLogModule):
         return '{} - {}'.format(str(type(self))[21:-2], name)
 
 
+class BTRFSScrubResults(AlpLogModule):
+
+    using = {
+        0: 'PATH',
+        1: 'UUID',
+        2: 'Scrub started',
+        3: 'Status',
+        4: 'Duration',
+        5: 'Total to scrub',
+        6: 'Rate',
+        7: 'Error summary',
+    }
+
+    def add_line(self, line) -> None:
+        if not line.strip():
+            return
+        parts = line.split(':')
+        if 'PATH' in self.items and parts[0] in 'PATH':
+            # Create new instance and return as such
+            new_instance = BTRFSScrubResults()
+            new_instance.add_line(line)
+            return new_instance
+        if parts[0] in self.using.values():
+            key = parts[0].strip()
+            value = parts[1].strip()
+            self.items[key] = value
+        else:
+            pass
+
+    def name(self):
+        name = None
+        if 'PATH' in self.items:
+            name = self.items['PATH'].split('/')[-1]
+            if not name:
+                name = '/'
+        return '{} - {}'.format('BTRFS Scrub Result', name)
+
+
+class BTRFSStats(AlpLogModule):
+
+    using = {
+        0: 'write_io_errs',
+        1: 'read_io_errs',
+        2: 'flush_io_errs',
+        3: 'corruption_errs',
+        4: 'generation_errs',
+    }
+
+    def add_line(self, line) -> None:
+        if not line.strip():
+            return
+        parts = line.split()
+        fparts = parts[0].split('.')
+        device = fparts[0][1:-1]
+        key = fparts[1]
+        if 'filesystem' not in self.items:
+            self.items['filesystem'] = device
+        if self.items['filesystem'] != device:
+            new_instance = BTRFSStats()
+            new_instance.add_line(line)
+            return new_instance
+        if key in self.using.values():
+            value = parts[1].strip()
+            self.items[key] = value
+        else:
+            pass
+
+    def name(self):
+        name = None
+        if 'filesystem' in self.items:
+            name = self.items['filesystem']
+        return '{} - {}'.format('BTRFS Stats', name)
+
+
 class SmartStatus(AlpLogModule):
 
     using = {
@@ -447,6 +524,16 @@ class RCStatus(AlpLogModule):
             self.items[parts[1].strip().upper()] = ''
         else:
             self.items[parts[0].strip()] = parts[2].strip()
+
+
+class SystemctlStatus(AlpLogModule):
+
+    def add_line(self, line) -> None:
+        if not line.strip():
+            return
+        parts = line.strip().split()
+        if len(parts) >= 4:
+            self.items[parts[0].strip()] = parts[3].strip()
 
 
 class USB(AlpLogModule):
@@ -560,8 +647,9 @@ class AlpLogParser():
         if line.strip() == 'ACCESS INFORMATION':
             # File header detected
             return Ignore()
-        if line.startswith('# '):
+        if line.startswith('# ') or line.startswith('### '):
             # Module header detected
+            line = line.replace('### ', '')
             line = line.replace('# ', '')
             line = line.replace(':', '')
             line = line.strip()

@@ -133,7 +133,13 @@ class AlpLogViewerWindows(QtWidgets.QMainWindow):
 
     def on_listview_clicked(self, selected, deselected):
         if self.data:
-            module_models = tuple([item.modules[selected.indexes()[0].row()] for item in self.data])
+            item_index = selected.indexes()[0].row()
+            try:
+                module_models = tuple([item.modules[item_index] for item in self.data])
+            except IndexError:
+                error_dialog = QtWidgets.QErrorMessage()
+                error_dialog.showMessage('Input logfiles malformed. Not the same number if input items.')
+                module_models = tuple()
             self.model.set_items(module_models)
             self.data_tableview.resizeColumnsToContents()
 
